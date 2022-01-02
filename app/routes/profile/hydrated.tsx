@@ -4,6 +4,7 @@ import { Form, useLoaderData, useActionData, useTransition, json } from 'remix';
 import { authenticator } from '~/util/auth.server';
 import { Button } from '~/components/form';
 import * as Profile from '~/util/db.server';
+import type { CountryNames } from '~/util/countries.server';
 import {
   ProfileInfo,
   ProfileFields,
@@ -35,7 +36,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function ProfileHydratedFormRoute() {
   const transition = useTransition();
-  const { data } = useLoaderData<LoaderData>();
+  const { data, countries } = useLoaderData<LoaderData & CountryNames>();
   const actionData = useActionData<ActionData>();
 
   return (
@@ -55,6 +56,12 @@ export default function ProfileHydratedFormRoute() {
           values={data}
           errors={actionData?.errors}
           disabled={transition.state == 'submitting'}
+          options={{
+            country: Object.entries(countries).map(([value, label]) => ({
+              label,
+              value,
+            })),
+          }}
         />
 
         <div className="flex items-center justify-end">

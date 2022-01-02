@@ -5,6 +5,7 @@ import { redirectBack } from 'remix-utils';
 import { authenticator } from '~/util/auth.server';
 import { commitSession, getSession } from '~/util/session.server';
 import * as Profile from '~/util/db.server';
+import { getCountries, CountryNames } from '~/util/countries.server';
 import { Button } from '~/components/form';
 import {
   ProfileInfo,
@@ -21,9 +22,10 @@ export const loader: LoaderFunction = async ({ request }) => {
   const data = await Profile.get(user.email);
   const session = await getSession(request.headers.get('cookie'));
   const errors: LoaderData['errors'] = session.get('errors');
+  const countries = getCountries();
 
   return json(
-    { data, errors },
+    { data, errors, countries },
     { headers: { 'set-cookie': await commitSession(session) } }
   );
 };
@@ -52,7 +54,9 @@ export const action: ActionFunction = async ({ request }) => {
 };
 
 export default function ProfileHTMLFormRoute() {
-  const { data, errors } = useLoaderData<LoaderData>();
+  const { data, errors, countries } = useLoaderData<
+    LoaderData & CountryNames
+  >();
 
   return (
     <div className="space-y-6">
@@ -69,6 +73,12 @@ export default function ProfileHTMLFormRoute() {
           legend="HTML Form"
           values={data}
           errors={errors}
+          options={{
+            country: Object.entries(countries).map(([value, label]) => ({
+              label,
+              value,
+            })),
+          }}
         />
 
         <div className="flex items-center justify-end">

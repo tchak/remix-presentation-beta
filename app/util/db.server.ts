@@ -4,6 +4,11 @@ import { z } from 'zod';
 export const Profile = z.object({
   firstName: z.string().min(1),
   lastName: z.string().min(1),
+  vaccinated: z
+    .string()
+    .optional()
+    .transform((checked) => checked == 'true'),
+  country: z.string().min(2),
 });
 export type Profile = z.infer<typeof Profile>;
 

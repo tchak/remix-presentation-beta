@@ -1,6 +1,6 @@
 import type { ZodError } from 'zod';
 
-import { Input, InputProps } from './form';
+import { Input, InputProps, SelectProps } from './form';
 import type { Profile } from '~/util/db.server';
 
 export type Errors = Record<
@@ -11,11 +11,13 @@ export type ProfileData = {
   data: Profile | null;
   errors?: Errors;
 };
-type ProfileInputProps = InputProps & { name: keyof Profile };
+type ProfileInputProps = InputProps<keyof Profile> | SelectProps<keyof Profile>;
 
 const FIELDS: ProfileInputProps[] = [
   { label: 'First Name', name: 'firstName', required: true },
   { label: 'Last Name', name: 'lastName', required: true },
+  { label: 'Country', name: 'country', options: [], required: true },
+  { label: 'Vaccinated', name: 'vaccinated', type: 'checkbox' },
 ];
 
 export function ProfileInfo({ profile }: { profile: Profile }) {
@@ -31,22 +33,32 @@ export function ProfileInfo({ profile }: { profile: Profile }) {
       </div>
       <div className="border-t border-gray-200 px-4 py-5 sm:p-0">
         <dl className="sm:divide-y sm:divide-gray-200">
-          <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">First Name</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {profile.firstName}
-            </dd>
-          </div>
-          <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-            <dt className="text-sm font-medium text-gray-500">Last Name</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-              {profile.lastName}
-            </dd>
-          </div>
+          {FIELDS.map(({ label, name, ...field }) => (
+            <div className="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">{label}</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {isCheckbox(field) ? (
+                  <input
+                    type="checkbox"
+                    readOnly
+                    disabled
+                    className="h-4 w-4 text-blue-600 border-gray-300 rounded"
+                    defaultChecked={profile.vaccinated}
+                  />
+                ) : (
+                  profile[name]
+                )}
+              </dd>
+            </div>
+          ))}
         </dl>
       </div>
     </div>
   );
+}
+
+function isCheckbox(field: Partial<ProfileInputProps>): boolean {
+  return 'type' in field && field.type == 'checkbox';
 }
 
 export function ProfileFields({
@@ -54,6 +66,7 @@ export function ProfileFields({
   legend,
   values,
   errors,
+  options,
   disabled,
 }: {
   id: string;
@@ -61,20 +74,23 @@ export function ProfileFields({
   values?: Partial<Profile> | null;
   errors?: Errors;
   disabled?: boolean;
+  options?: Partial<Record<keyof Profile, SelectProps['options'] | undefined>>;
 }) {
   const fields: ProfileInputProps[] = FIELDS.map(({ name, ...props }) => {
     const errorMessage = errors && errors[name]?.message;
+    const defaultValue = errorMessage
+      ? (errors && errors[name]?.value) ?? (values && values[name]) ?? undefined
+      : (values && values[name]) ?? undefined;
     return {
       disabled,
       name,
       id: name,
       errorMessage,
-      defaultValue: errorMessage
-        ? (errors && errors[name]?.value) ??
-          (values && values[name]) ??
-          undefined
-        : (values && values[name]) ?? undefined,
+      ...(typeof defaultValue == 'boolean'
+        ? { defaultChecked: defaultValue, value: 'true' }
+        : { defaultValue }),
       ...props,
+      ...(options && options[name] ? { options: options[name] } : undefined),
     };
   });
   return (
