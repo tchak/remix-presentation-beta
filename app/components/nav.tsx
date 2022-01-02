@@ -11,32 +11,37 @@ export function Nav({
   children?: ReactNode;
 }) {
   return (
-    <nav className="flex items-center justify-between">
-      <h1 className="py-6">
-        <Link to="/">Super Form</Link>
-      </h1>
-      <div className="flex-grow px-3 space-x-3">{children}</div>
-      <div>
-        {isAuthenticated ? (
-          <Link
-            to="/signout"
-            className={buttonClassName({ primary: true, size: 'sm' })}
-          >
-            Sign Out
-          </Link>
-        ) : (
-          <NavLink
-            to="/signin"
-            className={({ isActive }) =>
-              isActive
-                ? 'hidden'
-                : buttonClassName({ primary: true, size: 'sm' })
-            }
-          >
-            Sign In
-          </NavLink>
-        )}
+    <nav className="py-6">
+      <div className="flex items-center justify-between">
+        <h1>
+          <Link to="/">Super Form</Link>
+        </h1>
+        <div className="hidden md:flex flex-grow px-3 space-x-3">
+          {children}
+        </div>
+        <div>
+          {isAuthenticated ? (
+            <Link
+              to="/signout"
+              className={buttonClassName({ primary: true, size: 'sm' })}
+            >
+              Sign Out
+            </Link>
+          ) : (
+            <NavLink
+              to="/signin"
+              className={({ isActive }) =>
+                isActive
+                  ? 'hidden'
+                  : buttonClassName({ primary: true, size: 'sm' })
+              }
+            >
+              Sign In
+            </NavLink>
+          )}
+        </div>
       </div>
+      <div className="flex md:hidden space-x-3 mt-3">{children}</div>
     </nav>
   );
 }
