@@ -1,7 +1,8 @@
 import type { ZodError } from 'zod';
 
-import { Input, InputProps, SelectProps } from './form';
+import type { InputProps, SelectProps } from './form';
 import type { Profile } from '~/util/db.server';
+import { Input } from './form';
 
 export type Errors = Record<
   keyof Profile,
@@ -133,7 +134,7 @@ export function ProfileFields({
 }
 
 export function getErrors(error: ZodError, formData: FormData): Errors {
-  const errors = {} as Record<string, unknown>;
+  const errors: Record<string, unknown> = {};
   const issues = Object.fromEntries(
     error.issues.map(({ message, path }) => [path[0], message])
   );
