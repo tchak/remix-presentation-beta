@@ -69,7 +69,13 @@
   "sideEffects": false,
   "size-limit": [
     {
+      "name": "All",
       "path": "public/build/**/*.js"
+    },
+    {
+      "name": "All [brotli]",
+      "path": "public/build/**/*.js",
+      "brotli": true
     }
   ],
   "prettier": {
