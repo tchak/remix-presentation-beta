@@ -19,11 +19,10 @@ export const loader: LoaderFunction = async ({ request }) => {
 
   const session = await getSession(request.headers.get('cookie'));
   const error = session.get('auth:error');
-  const cookie = await commitSession(session);
 
   return json(
     { errorMessage: error?.message },
-    { headers: { 'set-cookie': cookie } }
+    { headers: { 'set-cookie': await commitSession(session) } }
   );
 };
 
@@ -36,7 +35,7 @@ export const action: ActionFunction = ({ request }) =>
 export default function SignInRoute() {
   const data = useLoaderData<{ errorMessage?: string }>();
   const transition = useTransition();
-  const connecting = transition.type == 'actionSubmission';
+  const connecting = transition.state == 'submitting';
 
   return (
     <div>
