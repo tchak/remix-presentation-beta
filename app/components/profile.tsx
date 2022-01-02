@@ -20,7 +20,13 @@ const FIELDS: ProfileInputProps[] = [
   { label: 'Vaccinated', name: 'vaccinated', type: 'checkbox' },
 ];
 
-export function ProfileInfo({ profile }: { profile: Profile }) {
+export function ProfileInfo({
+  profile,
+  form,
+}: {
+  profile: Profile;
+  form?: FormData;
+}) {
   return (
     <div className="bg-white shadow overflow-hidden sm:rounded-lg">
       <div className="px-4 py-5 sm:px-6">
@@ -43,10 +49,10 @@ export function ProfileInfo({ profile }: { profile: Profile }) {
                     readOnly
                     disabled
                     className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                    defaultChecked={profile.vaccinated}
+                    defaultChecked={getBooleanValue(name, profile, form)}
                   />
                 ) : (
-                  profile[name]
+                  getStringValue(name, profile, form)
                 )}
               </dd>
             </div>
@@ -55,6 +61,25 @@ export function ProfileInfo({ profile }: { profile: Profile }) {
       </div>
     </div>
   );
+}
+
+function getStringValue(
+  name: keyof Profile,
+  profile: Profile,
+  form?: FormData
+): string {
+  if (form && form.has(name)) {
+    return String(form.get(name));
+  }
+  return String(profile[name]);
+}
+
+function getBooleanValue(
+  name: keyof Profile,
+  profile: Profile,
+  form?: FormData
+): boolean {
+  return !!((form && form.get(name) == 'true') || profile[name]);
 }
 
 function isCheckbox(field: Partial<ProfileInputProps>): boolean {
