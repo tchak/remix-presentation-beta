@@ -279,7 +279,7 @@ function Select<Name = string>({
         }
       >
         <ReactSelect
-          id={id}
+          inputId={id}
           name={props.name}
           className="mt-1 block w-full text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
           minMenuHeight={100}
