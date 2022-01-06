@@ -6,7 +6,9 @@ paginate: false
 # **Remix presentation beta.gouv.fr**
 ---
 # **C'est quoi Remix ?**
+> Remix est un framework full stack basé sur les fondements de la plateforme web.
 ---
+![](./public/tweet.png)
 
 ---
 # React Router v6
@@ -63,7 +65,7 @@ export interface RouteModule {
 export const links = () => [
   {
     rel: 'stylesheet',
-    href: '/tailwind.css'
+    href: '/index.css'
   },
   {
     rel: 'apple-touch-icon',
@@ -95,7 +97,7 @@ const response = await fetch('https://my.api.com', {
 
 response // type Response
 
-const request = Request('https://my.api.com', {
+const request = new Request('https://my.api.com', {
   headers: { accept: 'application/json' }
 });
 
@@ -126,22 +128,6 @@ export const loader: LoaderFunction = async ({ params }) => {
 ```
 ---
 ## Loader + json
-```ts
-import { json } from 'remix';
-
-export const loader: LoaderFunction = async ({ params }) => {
-  const todo = await getTodo(params.id);
-
-  return json(todo);
-};
-```
-```ts
-export const loader: LoaderFunction = async ({ params }) => {
-  const todo = await getTodo(params.id);
-
-  return todo;
-};
-```
 ```ts
 export const loader: LoaderFunction = async ({ params }) => {
   return getTodo(params.id);
@@ -254,17 +240,6 @@ function Document({ children }) {
 }
 ```
 ---
-## Application Root
-```tsx
-export default function App() {
-  return (
-    <Document>
-      <Outlet />
-    </Document>
-  );
-}
-```
----
 ## ErrorBoundary
 ```tsx
 export function ErrorBoundary({ error }) {
@@ -292,11 +267,6 @@ export default IndexRoute() {
   return <div>Hello World!</div>;
 }
 ```
-
-<br>
-
-:warning: Si `export default` est omis, la route sera interprétée comme une API route !
-
 ---
 ## Route + loader
 ```tsx
@@ -366,6 +336,7 @@ function MyForm({ firstName }) {
       <input
         id="firstName"
         name="firstName"
+        disabled={disabled}
         defaultValue={firstName}
       />
       <button disabled={disabled} type="submit">Save</button>
@@ -373,3 +344,14 @@ function MyForm({ firstName }) {
   </>;
 }
 ```
+---
+# **Questions ?**
+---
+# **Liens utiles**
+
+[Remix](https://remix.run)
+[Remix Auth](https://github.com/sergiodxa/remix-auth)
+[Remix Guide](https://remix.guide)
+
+[Remix + GraphQL](https://github.com/tchak/remix-graphql-example)
+[Demo](https://github.com/tchak/remix-presentation-beta)
