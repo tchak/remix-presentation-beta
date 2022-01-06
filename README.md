@@ -8,7 +8,7 @@ paginate: false
 # **C'est quoi Remix ?**
 > Remix est un framework full stack basé sur les fondements de la plateforme web.
 ---
-![](./public/tweet.png)
+![](https://github.com/tchak/remix-presentation-beta/blob/main/public/tweet.png?raw=true)
 
 ---
 # React Router v6
